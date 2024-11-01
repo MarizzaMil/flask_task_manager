@@ -1,20 +1,25 @@
+import logging
 from flask import Blueprint, jsonify, request
 from app.models.task import Task
 from app import db
-import logging
 
+# Set up logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 bp = Blueprint('task', __name__, url_prefix='/tasks')
 
 
-# GET all tasks
+# GET all tasks, optionally filter by category
 @bp.route('/', methods=['GET'])
 def get_tasks():
-    """Retrieve all tasks."""
+    """Retrieve all tasks, optionally filtered by category."""
     try:
-        tasks = Task.query.all()
+        category_id = request.args.get('category_id')
+        if category_id:
+            tasks = Task.query.filter_by(category_id=category_id).all()
+        else:
+            tasks = Task.query.all()
         return jsonify([task.to_dict() for task in tasks]), 200
     except Exception as e:
         logger.error(f"Error retrieving tasks: {e}")
@@ -32,26 +37,22 @@ def get_task(id):
         logger.error(f"Error retrieving task with ID {id}: {e}")
         return jsonify({'error': 'Failed to retrieve task'}), 500
 
-
 # POST a new task
 @bp.route('/', methods=['POST'])
 def create_task():
     """Create a new task."""
     data = request.get_json()
 
-    if not data:
-        logger.warning("No input data provided for task creation.")
-        return jsonify({'error': 'No input data provided'}), 400
-
-    title = data.get('title')
-    description = data.get('description')
-
-    if not title:
+    if not data or 'title' not in data:
         logger.warning("Title is required for task creation.")
         return jsonify({'error': 'Title is required'}), 400
 
+    title = data.get('title')
+    description = data.get('description')
+    category_id = data.get('category_id')
+
     try:
-        task = Task(title=title, description=description)
+        task = Task(title=title, description=description, category_id=category_id)
         db.session.add(task)
         db.session.commit()
         logger.info(f"Task created successfully with ID {task.id}.")
@@ -66,9 +67,10 @@ def create_task():
 @bp.route('/<int:id>', methods=['PUT'])
 def update_task(id):
     """Update a specific task."""
+    data = request.get_json()
+
     try:
         task = Task.query.get_or_404(id)
-        data = request.get_json()
 
         if not data:
             logger.warning(f"No input data provided for task ID {id}.")
@@ -77,6 +79,7 @@ def update_task(id):
         task.title = data.get('title', task.title)
         task.description = data.get('description', task.description)
         task.completed = data.get('completed', task.completed)
+        task.category_id = data.get('category_id', task.category_id)
 
         db.session.commit()
         logger.info(f"Task with ID {id} updated successfully.")
