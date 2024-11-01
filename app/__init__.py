@@ -24,5 +24,7 @@ def create_app():
     app.register_blueprint(task.bp)
     from app.routers.user import auth
     app.register_blueprint(auth)
+    from app.routers.category import category
+    app.register_blueprint(category)
 
     return app

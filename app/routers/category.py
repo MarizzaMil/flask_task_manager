@@ -7,10 +7,11 @@ from app import db
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-bp = Blueprint('category', __name__, url_prefix='/categories')
+category = Blueprint('category', __name__, url_prefix='/categories')
+
 
 # GET all categories
-@bp.route('/', methods=['GET'])
+@category.route('/', methods=['GET'])
 def get_categories():
     """Retrieve all categories."""
     try:
@@ -20,8 +21,9 @@ def get_categories():
         logger.error(f"Error retrieving categories: {e}")
         return jsonify({'error': 'Failed to retrieve categories'}), 500
 
+
 # GET a specific category by ID
-@bp.route('/<int:id>', methods=['GET'])
+@category.route('/<int:id>', methods=['GET'])
 def get_category(id):
     """Retrieve a specific category by ID."""
     try:
@@ -31,8 +33,9 @@ def get_category(id):
         logger.error(f"Error retrieving category with ID {id}: {e}")
         return jsonify({'error': 'Failed to retrieve category'}), 500
 
+
 # POST a new category
-@bp.route('/', methods=['POST'])
+@category.route('/', methods=['POST'])
 def create_category():
     """Create a new category."""
     data = request.get_json()
@@ -60,8 +63,9 @@ def create_category():
         db.session.rollback()
         return jsonify({'error': 'Failed to create category'}), 500
 
+
 # PUT (update) a specific category
-@bp.route('/<int:id>', methods=['PUT'])
+@category.route('/<int:id>', methods=['PUT'])
 def update_category(id):
     """Update a specific category."""
     data = request.get_json()
@@ -84,8 +88,9 @@ def update_category(id):
         db.session.rollback()
         return jsonify({'error': 'Failed to update category'}), 500
 
+
 # DELETE a specific category
-@bp.route('/<int:id>', methods=['DELETE'])
+@category.route('/<int:id>', methods=['DELETE'])
 def delete_category(id):
     """Delete a specific category."""
     try:
