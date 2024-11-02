@@ -20,7 +20,7 @@ Join us in making task management a breeze! Happy tracking! 🥳
 
 ## Table of Contents
 
-* Introduction
+* [Introduction](## Introduction)
 * Technologies Used
 * Setup Instructions
 * Running the Application
