@@ -21,12 +21,12 @@ Join us in making task management a breeze! Happy tracking! 🥳
 ## Table of Contents
 
 * [Introduction](#Introduction)
-* Technologies Used
-* Setup Instructions
-* Running the Application
-* Database Schema
-* API Endpoints
-* Additional Information
+* [Technologies Used](#Technologies-Used)
+* [Setup Instructions](#Setup-Instructions)
+* [Running the Application](#Running-the-Application)
+* [Database Schema](#Database-Schema)
+* [API Endpoints](#API-Endpoints)
+* [Additional Information](#Additional-Information)
 
 ## Introduction
 
