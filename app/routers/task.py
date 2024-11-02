@@ -1,6 +1,7 @@
 import logging
 from flask import Blueprint, jsonify, request
 from app.models.task import Task
+from app.models.category import Category
 from app import db
 
 # Set up logging
@@ -49,9 +50,22 @@ def create_task():
 
     title = data.get('title')
     description = data.get('description')
-    category_id = data.get('category_id')
+
+    # Initialize category_id to None or retrieve it from category_name if provided
+    category_id = None
+    category_name = data.get('category')
+    if category_name:
+        category = Category.query.filter_by(name=category_name).first()
+        if category:
+            category_id = category.id
+        else:
+            logger.warning(f"Category '{category_name}' not found.")
+            return jsonify({'error': f"Category '{category_name}' not found"}), 400
+    else:
+        category_id = data.get('category_id')
 
     try:
+        # Create and save the new task
         task = Task(title=title, description=description, category_id=category_id)
         db.session.add(task)
         db.session.commit()
@@ -61,6 +75,7 @@ def create_task():
         logger.error(f"Error creating task: {e}")
         db.session.rollback()
         return jsonify({'error': 'Failed to create task'}), 500
+
 
 
 # PUT (update) a specific task
@@ -76,10 +91,23 @@ def update_task(id):
             logger.warning(f"No input data provided for task ID {id}.")
             return jsonify({'error': 'No input data provided'}), 400
 
+        # Update the task attributes
         task.title = data.get('title', task.title)
         task.description = data.get('description', task.description)
         task.completed = data.get('completed', task.completed)
-        task.category_id = data.get('category_id', task.category_id)
+
+        # Get category_name from request and fetch category_id
+        category_name = data.get('category')
+        if category_name:
+            category = Category.query.filter_by(name=category_name).first()
+            if category:
+                task.category_id = category.id
+            else:
+                logger.warning(f"Category '{category_name}' not found.")
+                return jsonify({'error': f"Category '{category_name}' not found"}), 400
+        else:
+            # Use the existing category ID if no new category is provided
+            task.category_id = data.get('category_id', task.category_id)
 
         db.session.commit()
         logger.info(f"Task with ID {id} updated successfully.")
@@ -88,6 +116,7 @@ def update_task(id):
         logger.error(f"Error updating task with ID {id}: {e}")
         db.session.rollback()
         return jsonify({'error': 'Failed to update task'}), 500
+
 
 
 # DELETE a specific task
