@@ -38,6 +38,7 @@ def get_task(id):
         logger.error(f"Error retrieving task with ID {id}: {e}")
         return jsonify({'error': 'Failed to retrieve task'}), 500
 
+
 # POST a new task
 @bp.route('/', methods=['POST'])
 def create_task():
@@ -77,7 +78,6 @@ def create_task():
         return jsonify({'error': 'Failed to create task'}), 500
 
 
-
 # PUT (update) a specific task
 @bp.route('/<int:id>', methods=['PUT'])
 def update_task(id):
@@ -96,9 +96,13 @@ def update_task(id):
         task.description = data.get('description', task.description)
         task.completed = data.get('completed', task.completed)
 
-        # Get category_name from request and fetch category_id
-        category_name = data.get('category')
-        if category_name:
+        category_data = data.get('category')
+        if category_data:
+            if isinstance(category_data, dict):
+                category_name = category_data.get('name')
+            else:
+                category_name = category_data  # assuming it's already a string
+
             category = Category.query.filter_by(name=category_name).first()
             if category:
                 task.category_id = category.id
@@ -106,7 +110,6 @@ def update_task(id):
                 logger.warning(f"Category '{category_name}' not found.")
                 return jsonify({'error': f"Category '{category_name}' not found"}), 400
         else:
-            # Use the existing category ID if no new category is provided
             task.category_id = data.get('category_id', task.category_id)
 
         db.session.commit()
