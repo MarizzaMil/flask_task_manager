@@ -45,7 +45,10 @@ def register_user():
         db.session.commit()
         logger.info("New user registered with email: %s", email)
 
-        return jsonify(new_user.to_dict()), 201
+        token = generate_jwt({"user_id": new_user.id, "email": new_user.email})
+        logger.info("User %s logged in successfully", email)
+
+        return jsonify({"token": token, "user": new_user.to_dict()}), 201
 
     except Exception as e:
         logger.error("Error in registering user: %s", e)
