@@ -15,8 +15,69 @@ Task Tracker is a cozy haven for your tasks, allowing you to:
 * Secure Authentication: Your data is safe with us! Sign up and log in with a simple, secure process. 🔐
 * Flexible Task Management: Easily manage tasks with different titles, descriptions, and categories.
 * Logging and Error Handling: Keep things running smoothly with built-in logging to catch any bumps along the way. 🛠️
-* 
+  
 Join us in making task management a breeze! Happy tracking! 🥳
 
-Table of Contents
+## Table of Contents
+
+Introduction
+Technologies Used
+Setup Instructions
+Running the Application
+Database Schema
+API Endpoints
+Additional Information
+
+## Table of Contents
+
+This project is a web application built using Flask for the backend, PostgreSQL as the database, and React for the frontend. The application allows users to manage tasks and categories efficiently.
+
+## Technologies Used
+
+* Backend: Flask
+* Database: PostgreSQL
+* Frontend: React
+* ORM: SQLAlchemy
+* Authentication: JWT
+* Logging: Python's logging module
+
+## Setup Instructions
+
+To set up the project locally, follow these steps:
+
+1. Clone the repositories:
+```
+git clone https://github.com/MarizzaMil/task-manager
+git clone https://github.com/MarizzaMil/flask_task_manager
+```
+
+
+
+2. Set up a virtual environment (optional but recommended):
+```
+cd your-repo-name
+python3 -m venv venv
+source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+```
+
+3Install dependencies:
+```
+pip install -r requirements.txt
+```
+
+4. Set up PostgreSQL database:
+
+* Create a PostgreSQL database and user.
+* Update your .env file or your application configuration with the database connection details.
+  
+5. Run migrations (if using Flask-Migrate):
+
+```
+flask db upgrade
+```
+
+## Running the Application
+
+
+
 
